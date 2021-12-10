@@ -1,0 +1,16 @@
+# Basic dependabot.yml file with
+# minimum configuration for two package managers
+
+version: 2
+updates:
+  # Enable version updates for maven
+  # 1 - Check root directory
+  - package-ecosystem: "maven"
+    # Look for `pom.xml` file in the `root` directory
+    directory: "/"
+    # Check the maven registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+    target-branch: "dev"
+    # Allow up to 20 open pull requests
+    open-pull-requests-limit: 20

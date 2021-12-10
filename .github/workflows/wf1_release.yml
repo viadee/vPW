@@ -1,0 +1,128 @@
+##
+# This workflow builds and tests docker images and pushes analyzer and pipeline to AWS ECR.
+##
+
+name: Build release and push to AWS ECR
+
+# Triggered by a published release (pre-release).
+on:
+  release:
+    types: [prereleased, released]
+
+jobs:
+
+  build_and_push:
+    name: Build and push to AWS ECR
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # BUILD:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v2.1.0
+        with:
+          distribution: 'adopt' # See 'Supported distributions' for available options
+          java-version: '11'
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Execute build for pipeline, analyzer & vpw-shared-elasticsearch-config
+        # The *install* command executes each default lifecycle phase in order: validate -> compile -> test -> package -> verify, before executing install.
+        run: |
+          pwd
+          mvn clean install
+          mvn site:site
+
+      - name: Login to public ECR
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.AWS_PROD_ECR_VIADEE_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_PROD_ECR_VIADEE_SECRET_ACCESS_KEY }}
+        env:
+          AWS_REGION: us-east-1
+
+      # PUSH:
+      # Analyzer
+      - name: Docker meta
+        id: meta_analyzer
+        uses: docker/metadata-action@v3
+        with:
+          images: public.ecr.aws/viadee/vpw-analyzer
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: latest=true
+
+      - name: Build and push Docker image analyzer
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: ./analyzer
+          file: ./analyzer/Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta_analyzer.outputs.tags }}
+          labels: ${{ steps.meta_analyzer.outputs.labels }}
+
+      # Pipeline
+      - name: Docker meta
+        id: meta_pipeline
+        uses: docker/metadata-action@v3
+        with:
+          images: public.ecr.aws/viadee/vpw-pipeline
+          tags: |
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+          flavor: latest=true
+
+      - name: Build and push Docker image pipeline
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: ./pipeline
+          file: ./pipeline/Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta_pipeline.outputs.tags }}
+          labels: ${{ steps.meta_pipeline.outputs.labels }}
+
+      # UPDATE LICENSE REPORT
+      - name: Copy reports to ./sites outside repo directory
+        run: |
+          mkdir sites
+          cp -rv ./vPW/vPW/analyzer/target/site ./sites/site-analyzer
+          cp -rv ./vPW/vPW/pipeline/target/site ./sites/site-pipeline
+          cp -rv ./vPW/vPW/vpw-shared-elasticsearch-config/target/site ./sites/site-vpw-shared-elasticsearch-config
+        working-directory: ../../
+
+      - name: Switch to branch main
+        run: |
+          git fetch origin
+          git branch -v -a
+          git checkout main
+          git status
+
+      - name: Copy (overrite) sites into local branch main
+        run: |
+          cp -rv ./sites/site-analyzer ./vPW/vPW/docs/MavenSite
+          cp -rv ./sites/site-pipeline ./vPW/vPW/docs/MavenSite
+          cp -rv ./sites/site-vpw-shared-elasticsearch-config ./vPW/vPW/docs/MavenSite
+        working-directory: ../../
+
+      - name: Commit and push to remote
+        run: |
+          git config --global user.name 'wf1_release'
+          git config --global user.email 'no-reply-github-actions@viadee.de'
+          git add docs/MavenSite
+          git commit -m"update maven dependency report"
+          git push

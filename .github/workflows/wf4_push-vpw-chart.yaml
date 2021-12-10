@@ -1,0 +1,68 @@
+##
+# This workflow pushes helm charts to viadee/charts repository
+##
+
+name: Push vpw-chart to viadee/charts repository
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'deployment/helm-umbrella/vpw-chart/**'
+
+jobs:
+  update-chart-create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout viadee/vPW repository
+        uses: actions/checkout@v2
+        with:
+          path: vpw
+
+      - name: Checkout viadee/charts repository
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          repository: viadee/charts
+          path: charts
+
+      #
+      ## UMBRELLA VPW
+      #
+
+      - name: Apply changes to viadee/charts repository - umbrella vpw
+        run: |
+          rm -rfv ./charts/charts/vpw-chart
+          cp -rv ./vpw/deployment/helm-umbrella/vpw-chart ./charts/charts/
+
+      - name: Extract chart versions - umbrella vpw
+        run: |
+          helm show chart charts/charts/vpw-chart > chart-infos-vpw.txt
+          version_vpw=$( (tr -d '\n' < chart-infos-vpw.txt ) | egrep "(type:\s*)(application)(\s*)(version:)(\s*)([0-9]+.[0-9]+.[0-9]+)" -o | egrep "([0-9]+.[0-9]+.[0-9]+)" -o )
+          echo $version_vpw
+          echo "CHART_VERSION_VPW=$version_vpw" >> $GITHUB_ENV
+
+      - name: Create pull request - umbrella vpw
+        id: cpr-vpw
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          path: ./charts
+          base: main
+          committer: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          commit-message: "Update vpw-chart to version ${{ env.CHART_VERSION_VPW }}"
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: vpw-chart-${{ env.CHART_VERSION_VPW }}
+          delete-branch: true
+          title: vpw-chart-${{ env.CHART_VERSION_VPW }}
+          body: "Update vpw-chart to version ${{ env.CHART_VERSION_VPW }}"
+          draft: false
+          labels: automated-created-pr
+
+      - name: Check pull request - umbrella vpw
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr-vpw.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr-vpw.outputs.pull-request-url }}"

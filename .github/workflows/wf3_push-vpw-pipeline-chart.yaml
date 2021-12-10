@@ -1,0 +1,68 @@
+##
+# This workflow pushes helm charts to viadee/charts repository
+##
+
+name: Push vpw-pipeline-chart to viadee/charts repository
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'deployment/helm/vpw-pipeline-chart/**'
+
+jobs:
+  update-chart-create-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout viadee/vPW repository
+        uses: actions/checkout@v2
+        with:
+          path: vpw
+
+      - name: Checkout viadee/charts repository
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          repository: viadee/charts
+          path: charts
+
+      #
+      ## PIPELINE
+      #
+
+      - name: Apply changes to viadee/charts repository - pipeline
+        run: |
+          rm -rfv ./charts/charts/vpw-pipeline-chart
+          cp -rv ./vpw/deployment/helm/vpw-pipeline-chart ./charts/charts/
+
+      - name: Extract chart versions - pipeline
+        run: |
+          helm show chart charts/charts/vpw-pipeline-chart > chart-infos-pipeline.txt
+          version_pipeline=$( cat ./chart-infos-pipeline.txt | egrep "(version)(:)(\s)([0-9]+.[0-9]+.[0-9]+)" | egrep "([0-9]+.[0-9]+.[0-9]+)" -o)
+          echo $version_pipeline
+          echo "CHART_VERSION_PIPELINE=$version_pipeline" >> $GITHUB_ENV
+
+      - name: Create pull request - pipeline
+        id: cpr-pipeline
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          path: ./charts
+          base: main
+          committer: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          commit-message: "Update vpw-pipeline-chart to version ${{ env.CHART_VERSION_PIPELINE }}"
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: vpw-pipeline-chart-${{ env.CHART_VERSION_PIPELINE }}
+          delete-branch: true
+          title: vpw-pipeline-chart-${{ env.CHART_VERSION_PIPELINE }}
+          body: "Update vpw-pipeline-chart to version ${{ env.CHART_VERSION_PIPELINE }}"
+          draft: false
+          labels: automated-created-pr
+
+      - name: Check pull request - pipeline
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr-pipeline.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr-pipeline.outputs.pull-request-url }}"

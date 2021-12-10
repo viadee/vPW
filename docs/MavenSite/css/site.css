@@ -1,0 +1,17 @@
+/* You can override this file with your own styles */
+.xcenter {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+    text-align: center;
+}
+.textcenter {
+    text-align: center;
+}
+#viadee_logo{
+    display: block;
+    max-width:170px;
+    max-height:65px;
+    width: auto;
+    height: auto;
+}

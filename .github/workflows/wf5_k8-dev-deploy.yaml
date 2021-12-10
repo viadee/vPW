@@ -1,0 +1,171 @@
+##
+# This workflow builds and tests docker images and pushes analyzer and pipeline to AWS ECR and
+# sets the new image version in gitlab bootstrap repository to trigger new deployment with Argo CD.
+##
+
+name: Build release and push to AWS ECR & deploy on K8
+
+on:
+  push:
+    paths-ignore:
+      - 'deployment/**'
+      - '.github/**'
+      - 'docs/**'
+      - 'README.md'
+    branches:
+      - dev
+
+jobs:
+  build_and_push:
+    name: Build and push to AWS ECR
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.step1.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # BUILD:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Set up JDK 1.11
+        uses: actions/setup-java@v2.1.0
+        with:
+          distribution: 'adopt' # See 'Supported distributions' for available options
+          java-version: '11'
+
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Execute build for pipeline, analyzer & vpw-shared-elasticsearch-config
+        # The *package* command executes each default lifecycle phase in order: validate -> compile -> test, before executing package.
+        run: mvn package
+
+      - name: Login to public ECR
+        uses: docker/login-action@v1
+        with:
+          registry: public.ecr.aws
+          username: ${{ secrets.AWS_PROD_ECR_VIADEE_ACCESS_KEY_ID }}
+          password: ${{ secrets.AWS_PROD_ECR_VIADEE_SECRET_ACCESS_KEY }}
+        env:
+          AWS_REGION: us-east-1
+
+      # PUSH:
+      # Analyzer
+      - name: Docker meta
+        id: meta_analyzer
+        uses: docker/metadata-action@v3
+        with:
+          images: public.ecr.aws/viadee/vpw-analyzer
+          tags: |
+            type=raw,value={{branch}}-{{date 'YYYYMMDD'}}-{{sha}}
+          labels: |
+            env=dev
+            branch={{branch}}
+          flavor: latest=false
+
+      - name: Check tags and labels
+        run: |
+          echo "${{ steps.meta_analyzer.outputs.tags }}"
+          echo "${{ steps.meta_analyzer.outputs.labels }}"
+
+      - name: Build and push Docker image analyzer
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: ./analyzer
+          file: ./analyzer/Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta_analyzer.outputs.tags }}
+          labels: ${{ steps.meta_analyzer.outputs.labels }}
+
+      # Pipeline
+      - name: Docker meta
+        id: meta_pipeline
+        uses: docker/metadata-action@v3
+        with:
+          images: public.ecr.aws/viadee/vpw-pipeline
+          tags: |
+            type=raw,value={{branch}}-{{date 'YYYYMMDD'}}-{{sha}}
+          labels: |
+            env=dev
+            branch={{branch}}
+          flavor: latest=false
+
+      - name: Check tags and labels
+        run: |
+          echo "${{ steps.meta_pipeline.outputs.tags }}"
+          echo "${{ steps.meta_pipeline.outputs.labels }}"
+
+      - name: Build and push Docker image pipeline
+        uses: docker/build-push-action@v2.6.1
+        with:
+          context: ./pipeline
+          file: ./pipeline/Dockerfile
+          platforms: linux/amd64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta_pipeline.outputs.tags }}
+          labels: ${{ steps.meta_pipeline.outputs.labels }}
+
+      # Extract version: remove everything until character ":"
+      - name: Extract version
+        run: |
+          v='${{ steps.meta_pipeline.outputs.tags }}' && ( echo "VERSION=$(echo "${v#*:}")" >> $GITHUB_ENV )
+
+      - id: step1
+        run: echo "::set-output name=version::$VERSION"
+
+
+  trigger_deploy:
+    name: Checkout GitLab repo bootstrap-apps and push new version
+    runs-on: ubuntu-latest
+    needs: build_and_push
+
+    steps:
+      - name: Version used in previous job 'build_and_push'
+        run: echo ${{needs.build_and_push.outputs.version}}
+
+      - name: Checkout repo bootstrap-apps
+        run: |
+          git clone https://$TOKEN_NAME:$TOKEN@gitlab.intern.viadee.de/gitlab/viadee/BPMN/bpm-cloud2/bootstrap-apps.git
+        env:
+          TOKEN: ${{ secrets.GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN }}
+          TOKEN_NAME: GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN
+
+      # Set version
+      - name: Set version to values.yaml with yq
+        id: yq
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq eval '(.vpw.vpw_analyzer.image.tag, .vpw.vpw_pipeline.image.tag) = "${{needs.build_and_push.outputs.version}}"' './bootstrap-apps/bootstrap/values.yaml'
+
+      - name: Save vpw.yaml
+        run: |
+          echo "${{ steps.yq.outputs.result }}" > bootstrap-apps/bootstrap/values.yaml
+
+      - name: Show updated vpw.yaml
+        run:
+          echo "$(cat values.yaml)"
+        working-directory: ./bootstrap-apps/bootstrap
+
+      - name: Commit & push vpw.yaml
+        run: |
+          git config --global user.name 'wf5_k8-dev-deploy'
+          git config --global user.email 'no-reply-github-actions@viadee.de'
+          git status
+          git add bootstrap/values.yaml
+          git commit -m"set image version to ${{needs.build_and_push.outputs.version}}"
+          git push https://$TOKEN_NAME:$TOKEN@gitlab.intern.viadee.de/gitlab/viadee/BPMN/bpm-cloud2/bootstrap-apps.git
+        env:
+          TOKEN: ${{ secrets.GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN }}
+          TOKEN_NAME: GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN
+        working-directory: bootstrap-apps

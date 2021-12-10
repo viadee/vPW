@@ -1,4 +1,8 @@
-BSD 3-Clause License
+---
+title: License
+nav_order: 6
+---
+# BSD 3-Clause License
 
 Copyright (c) 2021, viadee IT-Unternehmensberatung AG
 All rights reserved.

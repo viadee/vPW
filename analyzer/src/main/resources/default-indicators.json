@@ -1,0 +1,102 @@
+[
+  {
+    "id": "ef5b2a27-166f-47ba-85fc-ebb8b1d601ad",
+    "name": "Activity Count",
+    "description": null,
+    "type": "activity",
+    "subtype": "count",
+    "operator": "SUM",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "595a8c8b-8e5e-41c7-9114-092abad1be95",
+    "name": "Activity Duration (Sum)",
+    "description": null,
+    "type": "activity",
+    "subtype": "duration",
+    "operator": "SUM",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "64f5a659-89aa-40a0-ab9f-cdb310461f56",
+    "name": "Activity Duration (Average)",
+    "description": null,
+    "type": "activity",
+    "subtype": "duration",
+    "operator": "AVG",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "33256927-039f-400c-8958-4f83dacfe9ac",
+    "name": "Activity Duration (Min)",
+    "description": null,
+    "type": "activity",
+    "subtype": "duration",
+    "operator": "MIN",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "9e1034bc-e09b-4fae-950c-0bfc0853fd18",
+    "name": "Activity Duration (Max)",
+    "description": null,
+    "type": "activity",
+    "subtype": "duration",
+    "operator": "MAX",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "9c09fe2c-2755-4f92-972b-d069f6f6a672",
+    "name": "Process Instance Count",
+    "description": null,
+    "type": "process",
+    "subtype": "count",
+    "operator": "SUM",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "d14de7e3-2d8e-4de4-95d3-5aa2fae63bd6",
+    "name": "Process Instance Duration (Sum)",
+    "description": null,
+    "type": "process",
+    "subtype": "duration",
+    "operator": "SUM",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "c9eef1ac-26f3-43ee-87f0-02b0490400d9",
+    "name": "Process Instance Duration (Average)",
+    "description": null,
+    "type": "process",
+    "subtype": "duration",
+    "operator": "AVG",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "b3f3658e-78c3-4c1f-800e-1bf052911bd0",
+    "name": "Process Instance Duration (Min)",
+    "description": null,
+    "type": "process",
+    "subtype": "duration",
+    "operator": "MIN",
+    "processDefinitionId": null,
+    "variable": null
+  },
+  {
+    "id": "e3dd166a-0216-4b0f-b6ec-1e181e0c0285",
+    "name": "Process Instance Duration (Max)",
+    "description": null,
+    "type": "process",
+    "subtype": "duration",
+    "operator": "MAX",
+    "processDefinitionId": null,
+    "variable": null
+  }
+]

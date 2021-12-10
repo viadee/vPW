@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .Chart.Name }}
+  labels:
+    {{- include "vpw-analyzer-chart.labels" . | nindent 4 }}
+
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "vpw-analyzer-chart.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "vpw-analyzer-chart.selectorLabels" . | nindent 8 }}
+
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "vpw-analyzer-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      {{- if .Values.cloudsqlProxy.enabled }}
+      volumes:
+        - name: {{ .Values.volumes.vpwCloudProxySecret.name }}
+          secret:
+            secretName: {{ .Values.volumes.vpwCloudProxySecret.secretName }}
+       {{- end }}
+
+      containers:
+        # Container 1
+        {{- if .Values.cloudsqlProxy.enabled }}
+        - name: {{ .Values.cloudsqlProxy.name }}
+          image: {{ .Values.cloudsqlProxy.image }}
+          command:
+          {{- range $key, $val := $.Values.cloudsqlProxy.command }}
+          - {{ $val | squote }}
+          {{- end }}
+          args: {{ .Values.cloudsqlProxy.args }}
+          securityContext:
+            runAsUser: {{ .Values.cloudsqlProxy.runAsUser }}
+            allowPrivilegeEscalation: {{ .Values.cloudsqlProxy.allowPrivilegeEscalation }}
+          volumeMounts:
+            - name: {{ .Values.volumes.vpwCloudProxySecret.name }}
+              mountPath: {{ .Values.volumes.vpwCloudProxySecret.mountPath }}
+              readOnly: {{ .Values.volumes.vpwCloudProxySecret.readOnly }}
+        {{- end }}
+        # Container 2
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+{{ toYaml .Values.livenessProbe | indent 12 }}
+          readinessProbe:
+{{ toYaml .Values.readinessProbe | indent 12 }}
+          envFrom:
+            - configMapRef:
+                name: {{ .Chart.Name }}-environment-config
+          env:
+            - name: POSTGRESQL_PWD
+              valueFrom:
+                secretKeyRef:
+{{- if not .Values.environment.secret.externalPostgresqlSecret }}
+                  name: {{ .Chart.Name }}-environment-secret
+                  key: POSTGRESQL_PWD
+{{- else -}}
+{{- toYaml .Values.environment.secret.externalPostgresqlSecretData | nindent 18 }}
+{{- end }}
+            - name: SPRING_ELASTICSEARCH_REST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-environment-secret
+                  key: ELASTIC_PWD
+            - name: SPRING_ELASTICSEARCH_REST_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-environment-secret
+                  key: ELASTIC_USERNAME
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

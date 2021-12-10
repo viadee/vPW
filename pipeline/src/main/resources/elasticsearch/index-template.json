@@ -1,0 +1,81 @@
+{
+  "index_patterns": [],
+  "settings": {},
+  "mappings": {
+    "doc": {
+      "properties": {
+        "type": {
+          "type": "keyword"
+        },
+        "parentJoin": {
+          "type": "join",
+          "relations": {
+            "process": "activity",
+            "activity": "variable"
+          }
+        },
+        "processInstanceId": {
+          "type": "keyword"
+        },
+        "processDefinitionId": {
+          "type": "keyword"
+        },
+        "businessKey": {
+          "type": "keyword"
+        },
+        "startUserId": {
+          "type": "keyword"
+        },
+        "superProcessInstanceId": {
+          "type": "keyword"
+        },
+        "endActivityId": {
+          "type": "keyword"
+        },
+        "startActivityId": {
+          "type": "keyword"
+        },
+        "tenantId": {
+          "type": "keyword"
+        },
+        "activityId": {
+          "type": "keyword"
+        },
+        "activityInstanceId": {
+          "type": "keyword"
+        },
+        "parentActivityInstanceId": {
+          "type": "keyword"
+        },
+        "calledProcessInstanceId": {
+          "type": "keyword"
+        },
+        "variableName": {
+          "type": "keyword"
+        },
+        "variableInstanceId": {
+          "type": "keyword"
+        },
+        "scopeActivityInstanceId": {
+          "type": "keyword"
+        },
+        "timestamp": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "startTime": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "endTime": {
+          "type": "date",
+          "format": "epoch_millis"
+        },
+        "createTime": {
+          "type": "date",
+          "format": "epoch_millis"
+        }
+      }
+    }
+  }
+}

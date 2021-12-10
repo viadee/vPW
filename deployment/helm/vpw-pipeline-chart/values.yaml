@@ -1,0 +1,137 @@
+#
+## viadee Unternehmensberatung AG
+#
+
+# Default values for vpw-pipeline of the viadee Process Warehouse.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: "public.ecr.aws/viadee/vpw-pipeline"
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# Specify labels
+labels: {}
+
+selectorLabels:
+  # Name of whole application: viadee Process Warehouse (vpw)
+  app: vpw
+  # Pipeline as part of the viadee Process Warehouse (vpw)
+  component: pipeline
+  # Release name of deployment
+  release: showcase
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+# Pipeline containers' liveness probe.
+livenessProbe:
+  httpGet:
+    path: "/status/alive"
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 15
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+# Pipeline containers' readiness probe.
+readinessProbe:
+  httpGet:
+    path: "/status/ready"
+    port: http
+  initialDelaySeconds: 15
+  periodSeconds: 10
+  timeoutSeconds: 2
+  failureThreshold: 3
+
+# Service parameters
+service:
+  enabled: false  # Enable oder disable usage of service
+  type: ClusterIP # Kubernetes Service type
+  port: 80        # Exposed port
+
+# Ingress parameters
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+  #  - host: chart-example.local
+  #    paths:
+  #      - path: /
+  #        pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 64Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+environment:
+  secret:
+    # PWD to connect to elasticsearch
+    elastic_pwd: "elastic"
+  # Specify parameters of pipeline application
+  configMap:
+    # Kafka bootstrap server address (namespace vpw here)
+    kafka_bootstrap_servers: "vpw-kafka-0.vpw-kafka-brokers.vpw.svc:9192"
+    # Spring elasticsearch rest uri in your environment
+    spring_elasticsearch_rest_uris: "http://vpw-master:9200"
+    # Application (Tomcat) server port
+    server_port: "8080"
+    # URL endpoint of analyzer application within cluster
+    process_definition_rest_url: "http://vpw-analyzer:80/processDefinitions"
+    # Log level of pipeline application
+    logging_level_root: "INFO"

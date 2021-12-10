@@ -1,0 +1,155 @@
+version: '3'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    hostname: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - kafka
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    hostname: kafka
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9192,PLAINTEXT_HOST://kafka:9092
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LOG4J_ROOT_LOGLEVEL: INFO
+      KAFKA_LOG4J_LOGGERS: KAFKA_LOG4J_LOGGERS=org.apache.zookeeper=INFO,org.apache.kafka=INFO,kafka=INFO,kafka.cluster=INFO,kafka.controller=INFO,kafka.coordinator=INFO,kafka.log=INFO,kafka.server=INFO,kafka.zookeeper=INFO,state.change.logger=INFO
+    networks:
+      - kafka
+
+  kafka-manager:
+    image: zenko/kafka-manager:latest
+    ports:
+      - 9000:9000
+    depends_on:
+      - kafka
+      - zookeeper
+    environment:
+      ZK_HOSTS: zookeeper:2181
+      APPLICATION_SECRET: letmein
+      KM_ARGS: -Djava.net.preferIPv4Stack=true
+    networks:
+      - kafka
+
+  elasticsearch:
+    image: elasticsearch:7.14.1
+    environment:
+      - cluster.name=vpw
+      - discovery.type=single-node
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+
+  kibana:
+    image: kibana:7.14.1
+    ports:
+      - 5601:5601
+    networks:
+      - elastic
+    depends_on:
+      - elasticsearch
+
+  analyzer-postgres:
+    image: postgres:10.2-alpine
+    environment:
+      POSTGRES_DB: vpw
+      POSTGRES_USER: vpw
+      POSTGRES_PASSWORD: vpw
+    ports:
+      - 5433:5432
+    networks:
+      - analyzer
+
+  camunda-process-application:
+    image: camunda/camunda-bpm-platform:7.15.0
+    ports:
+      - 8081:8080
+    networks:
+      - camunda
+    environment:
+      LDAP_ENABLED: "false"
+
+  vpw-polling-client:
+    image: public.ecr.aws/viadee/camunda-kafka-polling-client:latest
+    depends_on:
+      - kafka
+    networks:
+      - camunda
+      - kafka
+    environment:
+      SPRING_PROFILES_ACTIVE: rest
+      CAMUNDA_REST_URL: http://camunda-process-application:8080/engine-rest/
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9192
+      polling_repository-data_initial-timestamp: "2000-01-01 00:00:00"
+      polling_runtime-data_last-polled-file: /data/lastPolled-runtime.properties
+      polling_repository-data_last-polled-file: /data/lastPolled-repository.properties
+
+  vpw-frontend:
+    image: public.ecr.aws/viadee/vpw-frontend:latest
+    depends_on:
+      - camunda-process-application
+      - kafka
+      - analyzer-postgres
+    ports:
+      - 8080:8080
+    command: sh ./local-nginx-startup.sh
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  vpw-analyzer:
+    image: public.ecr.aws/viadee/vpw-analyzer:latest
+    depends_on:
+      - analyzer-postgres
+      - camunda-process-application
+      - kafka
+      - elasticsearch
+    networks:
+      - analyzer
+      - elastic
+    ports:
+      - 9080:9080
+    environment:
+      LOGGING_LEVEL: debug
+      POSTGRESQL_HOST: analyzer-postgres
+      SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
+
+  vpw-pipeline:
+    image: public.ecr.aws/viadee/vpw-pipeline:latest
+    depends_on:
+      - vpw-analyzer
+      - analyzer-postgres
+      - camunda-process-application
+      - kafka
+      - elasticsearch
+    ports:
+      - 9081:9080
+    networks:
+      - elastic
+      - kafka
+      - analyzer
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: http://kafka:9092
+      PROCESS_DEFINITION_REST_URL: http://vpw-analyzer:9080/processDefinitions
+      LOGGING_LEVEL: debug
+      SPRING_ELASTICSEARCH_REST_URIS: http://elasticsearch:9200
+    restart: on-failure
+
+networks:
+  kafka:
+  elastic:
+  camunda:
+  analyzer:

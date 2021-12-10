@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-environment-config
+  labels:
+    {{- include "vpw-pipeline-chart.labels" . | nindent 4 }}
+data:
+  KAFKA_BOOTSTRAP_SERVERS: {{ .Values.environment.configMap.kafka_bootstrap_servers | quote }}
+  SPRING_ELASTICSEARCH_REST_URIS: {{ .Values.environment.configMap.spring_elasticsearch_rest_uris | quote }}
+  SERVER_PORT: {{ .Values.environment.configMap.server_port | quote }}
+  PROCESS_DEFINITION_REST_URL: {{ .Values.environment.configMap.process_definition_rest_url | quote }}
+  LOGGING_LEVEL_ROOT: {{ .Values.environment.configMap.logging_level_root | quote }}
