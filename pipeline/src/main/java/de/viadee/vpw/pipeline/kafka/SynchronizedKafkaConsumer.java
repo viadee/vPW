@@ -21,8 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Decorator für einen {@link Consumer}, der alle Methodenaufrufe mit einem exklusiven Lock (siehe {@link
- * ReentrantLock}) ausführt und somit Thread-safe ist.
+ * Decorator for a {@link Consumer} that executes all method calls with an exclusive lock
+ * (see {@linkReentrantLock}) and is thus thread-safe.
  */
 public class SynchronizedKafkaConsumer<K, V> implements Consumer<K, V> {
 
