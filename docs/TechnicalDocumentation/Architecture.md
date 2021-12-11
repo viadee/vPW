@@ -10,17 +10,17 @@ nav_order: 1
 
 ## Components
 
-* **[analyzer](../../analyzer)** 
+* **[analyzer](https://github.com/viadee/vPW/tree/main/analyzer)**
     * Spring-Boot-App
     * Provision of a REST API for the vPW frontend
     * Persistence of inventory data (dashboards, indicators) in PostgreSQL
     * Generation of Elasticsearch requests from the frontend requests and processing/preparation of the results
-* **[pipeline](../../pipeline)**
+* **[pipeline](https://github.com/viadee/vPW/tree/main/pipeline)**
     * Spring-Boot-App
     * Receiving process data from Kafka
     * Data preparation, including "breaking up" JSON objects into flat structures
     * Storage/indexing in Elasticsearch
-* **[vpw-shared-elasticsearch-config](../../vpw-shared-elasticsearch-config)**
+* **[vpw-shared-elasticsearch-config](https://github.com/viadee/vPW/tree/main/vpw-shared-elasticsearch-config)**
     * Spring boot AutoConfiguration for the Elasticsearch REST client, used by Analyzer and Pipeline.
 * **web-app**
     * Frontend, user interface & dashboard

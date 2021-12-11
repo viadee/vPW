@@ -31,11 +31,11 @@ nav_order: 2
 
 The following charts are available: 
 
-* [vpw-analyzer-chart](../../deployment/helm/vpw-analyzer-chart) 
-* [vpw-pipeline-chart](../../deployment/helm/vpw-pipeline-chart)
-* [vpw-frontend](../../deployment/helm-umbrella/vpw-chart/values.yaml) - values of vpw-frontend can be found in vpw-chart. 
-* [vpw-polling-client-chart](https://github.com/viadee/camunda-kafka-polling-client/tree/develop)  
-* [vpw-chart](../../deployment/helm-umbrella/vpw-chart)
+* [vpw-analyzer-chart](https://github.com/viadee/vPW/tree/main/deployment/helm) 
+* [vpw-pipeline-chart](https://github.com/viadee/vPW/tree/main/deployment/helm)
+* [vpw-frontend](https://github.com/viadee/vPW/blob/main/deployment/helm-umbrella/vpw-chart/values.yaml) - values of vpw-frontend can be found in vpw-chart. 
+* [vpw-polling-client-chart](https://github.com/viadee/camunda-kafka-polling-client)  
+* [vpw-chart](https://github.com/viadee/vPW/tree/main/deployment/helm-umbrella/vpw-chart)
 
 It is recommended to install the *vpw-chart*, since as an umbrella chart it combines all vpw components (vpw-analyzer-chart, vpw-pipeline-chart, vpw-frontend-chart, vpw-polling-client) and therefore allows an easy deployment.
 
@@ -118,4 +118,4 @@ The umbrella chart only contains the vpw components (vpw-analyzer, vpw-pipeline,
 * Alternatively, you can "port-forward" the service port of the frontend to your localhost. 
 
 ### 4. Deploy Script
-We provide a [script](../../deployment/deploy_script) to deploy all components together in a kubernetes cluster. Please note, that this deployment is not suitable for production environments as it serves only for testing and developing. 
+We provide a [script](https://github.com/viadee/vPW/tree/main/deployment/deploy_script) to deploy all components together in a kubernetes cluster. Please note, that this deployment is not suitable for production environments as it serves only for testing and developing. 
