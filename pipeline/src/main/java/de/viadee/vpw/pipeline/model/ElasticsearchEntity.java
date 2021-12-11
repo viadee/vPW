@@ -11,5 +11,5 @@ public interface ElasticsearchEntity {
     }
 
     @SuppressWarnings("unused")
-    Date getTimestamp(); // einheitliches Datumsfeld in Elastic für alle Event-Typen
+    Date getTimestamp(); // uniform date field in Elastic for all event types
 }

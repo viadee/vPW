@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import de.viadee.vpw.pipeline.kafka.KafkaListenerManager;
 
 /**
- * REST-Endpunkte für Kubernetes-Readiness-/Liveness-Probes.
+ * REST endpoints for Kubernetes readiness/liveness probes.
  */
 @RestController
 public class StatusController {
@@ -37,7 +37,7 @@ public class StatusController {
     }
 
     /**
-     * Liefert immer Status 200 "OK" (sobald die Anwendung läuft, soll für Kubernetes "ready" gemeldet werden).
+     * Always returns status 200 "OK" (once the application is running, "ready" should be reported for Kubernetes).
      *
      * @return {@link HttpStatus#OK}
      */
@@ -48,9 +48,9 @@ public class StatusController {
     }
 
     /**
-     * Prüft, ob der Kafka-Broker erreichbar ist und die Kafka-Listener aktiv sind.
+     * Checks if the Kafka broker is reachable and the Kafka listeners are active.
      *
-     * @return {@link HttpStatus#OK}, wenn aktiv; sonst {@link HttpStatus#INTERNAL_SERVER_ERROR}
+     * @return {@link HttpStatus#OK}, if active; else {@link HttpStatus#INTERNAL_SERVER_ERROR}
      */
     @GetMapping(path = "status/alive", produces = MediaType.TEXT_PLAIN_VALUE)
     public ResponseEntity<String> isAlive() {
@@ -68,7 +68,7 @@ public class StatusController {
     private boolean isBrokerAvailable() {
         String message = "Kafka broker available? {}";
         try {
-            // Workaround, um die Verbindung zu Kafka zu prüfen
+            // Workaround to check the connection to Kafka
             adminClient.listTopics().names().get(5, TimeUnit.SECONDS);
             logger.debug(message, TRUE);
             return true;

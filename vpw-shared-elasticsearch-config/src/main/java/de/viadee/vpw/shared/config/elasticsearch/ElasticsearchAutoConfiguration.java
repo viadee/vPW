@@ -10,8 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * Konfiguration des {@link RestClientBuilder}s. Der Builder wird in der Spring-{@link ElasticsearchRestClientAutoConfiguration}
- * verwendet, um einen {@link RestHighLevelClient} zu erzeugen, der wiederum von Analyzer und Pipeline benötigt wird.
+ * Configuration of the {@link RestClientBuilder}. The builder is used in the Spring {@link ElasticsearchRestClientAutoConfiguration}
+ * to create a {@link RestHighLevelClient}, which in turn is required by Analyzer and Pipeline.
  */
 @Configuration
 @EnableConfigurationProperties({ElasticsearchProperties.class, })

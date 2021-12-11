@@ -24,8 +24,8 @@ public class ElasticsearchConfig {
     }
 
     /**
-     * Basiert auf {@link org.springframework.boot.actuate.elasticsearch.ElasticsearchRestHealthIndicator}, verwendet aber
-     * den RestHighLevelClient.
+     * Based on {@link org.springframework.boot.actuate.elasticsearch.ElasticsearchRestHealthIndicator}, but uses
+     * RestHighLevelClient.
      */
     public static class ElasticsearchHealthIndicator extends AbstractHealthIndicator {
 
