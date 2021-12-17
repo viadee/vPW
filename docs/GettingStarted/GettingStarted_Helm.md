@@ -118,4 +118,7 @@ The umbrella chart only contains the vpw components (vpw-analyzer, vpw-pipeline,
 * Alternatively, you can "port-forward" the service port of the frontend to your localhost. 
 
 ### 4. Deploy Script
-We provide a [script](https://github.com/viadee/vPW/tree/main/deployment/deploy_script) to deploy all components together in a kubernetes cluster. Please note, that this deployment is not suitable for production environments as it serves only for testing and developing. 
+We provide a [script](https://github.com/viadee/vPW/tree/main/deployment/deploy_script) to deploy all components together in a kubernetes cluster. Please note, that this deployment is not suitable for production environments as it serves only for testing and developing.
+When running the script, the namespace that will be created in the cluster must be specified via the command line. You also need to be on the same folder level as the "kafka-ephemeral-single.yaml" and "postgresql-secret.yaml" files.  
+
+`sh .\k8_deploy_vpw_withComponents_script.sh "my-namespace"`
