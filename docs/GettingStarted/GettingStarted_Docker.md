@@ -22,7 +22,7 @@ The command `docker-compose up -d` (see [docker-compose.yml](../../docker-compos
 ** not necessary for basic functionality of the vPW
 
 ### 2. Develop local
-The command `docker-compose --file docker-compose-developer.yml up -d` (see [docker-compose_developer.yml](../../docker-compose_developer.yml)) starts all necessary applications except:
+The command `docker-compose --file docker-compose_developer.yml up -d` (see [docker-compose_developer.yml](../../docker-compose_developer.yml)) starts all necessary applications except:
 * **vpw-analyzer** Start on your IDE with spring profile `local`
 * **vpw-pipeline** Start on your IDE with spring profile `local`
 
