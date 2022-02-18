@@ -1,3 +1,12 @@
+[![pages-build-deployment](https://github.com/viadee/vPW/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/viadee/vPW/actions/workflows/pages/pages-build-deployment)
+[![Test pipeline, analyzer & vpw-shared-elasticsearch-config](https://github.com/viadee/vPW/actions/workflows/wf0_test.yml/badge.svg?branch=main)](https://github.com/viadee/vPW/actions/workflows/wf0_test.yml)
+[![Push vpw-pipeline-chart to viadee/charts repository](https://github.com/viadee/vPW/actions/workflows/wf3_push-vpw-pipeline-chart.yaml/badge.svg?branch=main)](https://github.com/viadee/vPW/actions/workflows/wf3_push-vpw-pipeline-chart.yaml)
+[![Push vpw-analyzer-chart to viadee/charts repository](https://github.com/viadee/vPW/actions/workflows/wf2_push-vpw-analyzer-chart.yaml/badge.svg?branch=main)](https://github.com/viadee/vPW/actions/workflows/wf2_push-vpw-analyzer-chart.yaml)
+[![Push vpw-chart to viadee/charts repository](https://github.com/viadee/vPW/actions/workflows/wf4_push-vpw-chart.yaml/badge.svg?branch=main)](https://github.com/viadee/vPW/actions/workflows/wf4_push-vpw-chart.yaml)
+[![Build release and push to AWS ECR](https://github.com/viadee/vPW/actions/workflows/wf1_release.yml/badge.svg)](https://github.com/viadee/vPW/actions/workflows/wf1_release.yml)
+[![Build release and push to AWS ECR & deploy on K8](https://github.com/viadee/vPW/actions/workflows/wf5_k8-dev-deploy.yaml/badge.svg?branch=dev)](https://github.com/viadee/vPW/actions/workflows/wf5_k8-dev-deploy.yaml)
+
+<br>
 <h1 align="center">The viadee Process Warehouse </h1>
 <h1 align="center">Explore what happens in your BPMN processes </h1>
 
