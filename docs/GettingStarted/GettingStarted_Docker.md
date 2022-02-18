@@ -35,3 +35,6 @@ However, we always recommend the _latest_ Docker version regardless of host mach
 
 ### 4. Images 
 The images can be found on our [Amazon Elastic Container Registry (ECR)](https://gallery.ecr.aws/viadee/).
+
+Use the following command to ensure that you always pull the latest version of the "latest" tag from the registry when you restart docker.
+`docker-compose down && docker-compose pull && docker-compose up -d`
