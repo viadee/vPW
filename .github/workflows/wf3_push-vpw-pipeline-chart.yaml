@@ -228,11 +228,10 @@ jobs:
           cd ./vpw
           git config --global user.name 'viadee-github-vpw'
           git config --global user.email 'no-reply-github-actions@viadee.de'
-          git status
-          git branch
+          git fetch origin
+          git pull
           git add deployment/helm-umbrella/**
           git diff --quiet && git diff --staged --quiet || git commit -m"auto-update of subchart version of umbrella vpw-chart"
-          git status
           git push https://$TOKEN_NAME:$TOKEN@github.com/viadee/vPW.git
         env:
           TOKEN: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}

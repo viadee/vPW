@@ -159,6 +159,7 @@ jobs:
           git config --global user.name 'wf1_release'
           git config --global user.email 'no-reply-github-actions@viadee.de'
           git fetch origin
+          git pull
           git branch -v -a
           git checkout main
           git status
