@@ -51,7 +51,7 @@ public class ProcessDefinitionEventListener {
     }
 
     @Retryable(recover = "shutdown", value = RestClientException.class,
-            maxAttempts = 12, backoff = @Backoff(delay = 5000))
+            maxAttempts = 120, backoff = @Backoff(delay = 5000))
     public void importProcessDefinition(ProcessDefinitionEvent event, Acknowledgment acknowledgment) {
 
         String processDefinitionId = event.getId();
