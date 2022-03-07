@@ -143,10 +143,18 @@ environment:
     externalPostgresqlSecretData:
       name: name
       key: key
-    # If no external secret is specified, set your password for postgresql here otherwise it will be ignored
+    # If no external secret is specified, set your password for postgresql here, otherwise it will be ignored
     postgresql_pwd: "vpw"
-    elastic_pwd: "elastic"
+    # Specify external secret within your kubernetes cluster, which you want to use to connect to your elasticsearch
+    externalElasticSecret: false
+    externalElasticSecretData:
+      name: name
+      key: key
+    # Specify the username to connect to your elasticsearch
     elastic_username: "elastic"
+    # If no external secret is specified, set your password for elasticsearch here, otherwise it will be ignored
+    elastic_pwd: "elastic"
+    # Specify the cloud sql credentials if activated
     cloud_sql_credentials: placeholder
   # Specify parameters of analyzer application
   configMap:
