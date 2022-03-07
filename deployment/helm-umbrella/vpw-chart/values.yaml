@@ -1,37 +1,15 @@
-#
-## viadee Unternehmensberatung AG
-#
-
-# Deploy chart:
-#   1) Execute inside vpw-chart directory:
-#       $ helm dependency update
-#   2) Execute outside vpw-chart directory:
-#       $ helm install vpw vpw-chart
-
-# Override values of vpw-analyzer & vpw-pipeline of the viadee Process Warehouse.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
-#
-## ANALYZER
-#
 vpw-analyzer:
-
   replicaCount: 1
-
   image:
     repository: "public.ecr.aws/viadee/vpw-analyzer"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-
   # Specify labels
   labels: {}
-
   selectorLabels:
     # Name of whole application: viadee Process Warehouse (vpw)
     app: vpw
@@ -39,7 +17,6 @@ vpw-analyzer:
     component: analyzer
     # Release name of deployment
     release: showcase
-
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
@@ -48,18 +25,16 @@ vpw-analyzer:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-
   podAnnotations: {}
-
   podSecurityContext: {}
   # fsGroup: 2000
 
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
   # runAsUser: 1000
 
   cloudsqlProxy:
@@ -72,15 +47,13 @@ vpw-analyzer:
       arg1: '-instances=example:europe-west3:example=tcp:5432'
       arg2: '-credential_file=/secrets/cloudsql/credentials.json'
     args: []
-    runAsUser: 2  # non-root user
+    runAsUser: 2 # non-root user
     allowPrivilegeEscalation: false
-
   volumes:
     vpwCloudProxySecret:
       name: "vpw-analyzer"
       mountPath: "/secrets/cloudsql"
       readOnly: true
-
   # Analyzer containers' liveness probe.
   livenessProbe:
     httpGet:
@@ -90,7 +63,6 @@ vpw-analyzer:
     periodSeconds: 30
     timeoutSeconds: 3
     failureThreshold: 5
-
   # Analyzer containers' readiness probe.
   readinessProbe:
     httpGet:
@@ -100,19 +72,17 @@ vpw-analyzer:
     periodSeconds: 2
     timeoutSeconds: 2
     failureThreshold: 1
-
   # Service parameters
   service:
-    type: ClusterIP   # Kubernetes Service type
-    port: 80          # Exposed port
-    targetPort: 8080  # Exposed port of container (analyzer application)
-
+    type: ClusterIP # Kubernetes Service type
+    port: 80 # Exposed port
+    targetPort: 8080 # Exposed port of container (analyzer application)
   # Ingress parameters
   ingress:
     enabled: false
     className: ""
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
     #  - host: chart-example.local
@@ -123,17 +93,16 @@ vpw-analyzer:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 380Mi
-    # requests:
-    #   cpu: 100m
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 380Mi
+  # requests:
+  #   cpu: 100m
   #   memory: 380Mi
 
   autoscaling:
@@ -142,11 +111,8 @@ vpw-analyzer:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
-
   nodeSelector: {}
-
   tolerations: []
-
   environment:
     secret:
       # Specify external secret within your kubernetes cluster, which you want to use to connect to your db
@@ -181,7 +147,6 @@ vpw-analyzer:
       spring_datasource_hikari_minimumidle: "2"
       # Log level of analyzer application
       logging_level_de_viadee: "debug"
-
   # Specify pod affinity
   affinity:
     podAntiAffinity:
@@ -193,27 +158,18 @@ vpw-analyzer:
                 values:
                   - vpw-analyzer
           topologyKey: kubernetes.io/hostname
-
-#
-## PIPELINE
-#
 vpw-pipeline:
-
   replicaCount: 1
-
   image:
     repository: "public.ecr.aws/viadee/vpw-pipeline"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-
   # Specify labels
   labels: {}
-
   selectorLabels:
     # Name of whole application: viadee Process Warehouse (vpw)
     app: vpw
@@ -221,7 +177,6 @@ vpw-pipeline:
     component: pipeline
     # Release name of deployment
     release: showcase
-
   serviceAccount:
     # Specifies whether a service account should be created
     create: false
@@ -230,18 +185,16 @@ vpw-pipeline:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-
   podAnnotations: {}
-
   podSecurityContext: {}
   # fsGroup: 2000
 
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
   # runAsUser: 1000
 
   # Pipeline containers' liveness probe.
@@ -253,7 +206,6 @@ vpw-pipeline:
     periodSeconds: 15
     timeoutSeconds: 2
     failureThreshold: 3
-
   # Pipeline containers' readiness probe.
   readinessProbe:
     httpGet:
@@ -263,19 +215,17 @@ vpw-pipeline:
     periodSeconds: 10
     timeoutSeconds: 2
     failureThreshold: 3
-
   # Service parameters
   service:
-    enabled: false  # Enable oder disable usage of service
+    enabled: false # Enable oder disable usage of service
     type: ClusterIP # Kubernetes Service type
-    port: 80        # Exposed port
-
+    port: 80 # Exposed port
   # Ingress parameters
   ingress:
     enabled: false
     className: ""
     annotations: {}
-      # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
     #  - host: chart-example.local
@@ -286,17 +236,16 @@ vpw-pipeline:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 64Mi
-    # requests:
-    #   cpu: 100m
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 64Mi
+  # requests:
+  #   cpu: 100m
   #   memory: 64Mi
 
   autoscaling:
@@ -305,13 +254,9 @@ vpw-pipeline:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
-
   nodeSelector: {}
-
   tolerations: []
-
   affinity: {}
-
   environment:
     secret:
       # PWD to connect to elasticsearch
@@ -328,28 +273,18 @@ vpw-pipeline:
       process_definition_rest_url: "http://vpw-analyzer:80/processDefinitions"
       # Log level of pipeline application
       logging_level_root: "INFO"
-
-
-#
-## FRONTEND
-#
 vpw-frontend:
-
   replicaCount: 1
-
   image:
     repository: "public.ecr.aws/viadee/vpw-frontend"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: "vpw-frontend"
-
   # Specify labels
   labels: {}
-
   selectorLabels:
     # Name of whole application: viadee Process Warehouse (vpw)
     app: vpw
@@ -357,7 +292,6 @@ vpw-frontend:
     component: frontend
     # Release name of deployment
     release: showcase
-
   serviceAccount:
     # Specifies whether a service account should be created
     create: true
@@ -366,18 +300,16 @@ vpw-frontend:
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-
   podAnnotations: {}
-
   podSecurityContext: {}
   # fsGroup: 2000
 
   securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
   # runAsUser: 1000
 
   # Volumes
@@ -387,7 +319,6 @@ vpw-frontend:
       secretName: vpw-frontend-basic-auth-secret
       mountPath: /etc/basic_auth
       htpasswd: demo:$2y$10$wFBQn.MYjgTRWKImDl8s/Ov44E1yf0Eg4Igcvu//CBGu1Onf82WCO # Set a htpasswd to access frontend application, here demo:demo
-
   # Frontend (nginx) containers' liveness probe.
   livenessProbe:
     httpGet:
@@ -397,7 +328,6 @@ vpw-frontend:
     periodSeconds: 15
     timeoutSeconds: 3
     failureThreshold: 5
-
   # Frontend (nginx) containers' readiness probe.
   readinessProbe:
     httpGet:
@@ -407,13 +337,11 @@ vpw-frontend:
     periodSeconds: 15
     timeoutSeconds: 3
     failureThreshold: 5
-
   # Service parameters
   service:
-    type: ClusterIP   # Kubernetes Service type
-    port: 8080        # Exposed port
-    targetPort: 8080  # Exposed port of container (frontend application)
-
+    type: ClusterIP # Kubernetes Service type
+    port: 8080 # Exposed port
+    targetPort: 8080 # Exposed port of container (frontend application)
   # Ingress parameters
   ingress:
     enabled: true
@@ -430,17 +358,16 @@ vpw-frontend:
       - secretName: tls-example-cloud
         hosts:
           - example.com
-
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
   #   memory: 128Mi
 
   autoscaling:
@@ -449,11 +376,8 @@ vpw-frontend:
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     targetMemoryUtilizationPercentage: 80
-
   nodeSelector: {}
-
   tolerations: []
-
   affinity:
     podAntiAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:
@@ -464,28 +388,18 @@ vpw-frontend:
                 values:
                   - vpw-frontend
           topologyKey: kubernetes.io/hostname
-
-
-#
-## POLLING-CLIENT
-#
 vpw-polling-client:
-
   replicaCount: 1
-
   image:
     repository: "public.ecr.aws/viadee/camunda-kafka-polling-client"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
-
-  imagePullSecrets: [ ]
+  imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
-
   # Specify labels
-  labels: { }
-
+  labels: {}
   selectorLabels:
     # Name of whole application: viadee Process Warehouse (vpw)
     app: vpw
@@ -493,26 +407,22 @@ vpw-polling-client:
     component: polling-client
     # Release name of deployment
     release: showcase
-
   serviceAccount:
     # Specifies whether a service account should be created
     create: false
     # Annotations to add to the service account
-    annotations: { }
+    annotations: {}
     # The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template
     name: ""
-
-  podAnnotations: { }
-
+  podAnnotations: {}
   podSecurityContext:
     fsGroup: 1000 # Write access for volume for appuser
-
-  securityContext: { }
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
+  securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
 
@@ -525,7 +435,6 @@ vpw-polling-client:
     timeoutSeconds: 2
     periodSeconds: 15
     failureThreshold: 3
-
   # Polling Client containers' readiness probe.
   readinessProbe:
     httpGet:
@@ -535,16 +444,14 @@ vpw-polling-client:
     timeoutSeconds: 2
     periodSeconds: 10
     failureThreshold: 5
-
   service:
     enabled: false
     type: ClusterIP
     port: 80
-
   ingress:
     enabled: false
     className: ""
-    annotations: { }
+    annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
     hosts:
@@ -552,20 +459,19 @@ vpw-polling-client:
         paths:
           - path: /
             pathType: ImplementationSpecific
-    tls: [ ]
+    tls: []
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
-  resources: { }
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
   #   cpu: 100m
   #   memory: 128Mi
 
@@ -574,14 +480,12 @@ vpw-polling-client:
     enabled: true
     storageClass: standard
     size: 1Gi
-
   autoscaling:
     enabled: false
     minReplicas: 1
     maxReplicas: 100
     targetCPUUtilizationPercentage: 80
     # targetMemoryUtilizationPercentage: 80
-
   environment:
     secret:
       # Camunda password to set for authentication from external secret
@@ -621,9 +525,6 @@ vpw-polling-client:
       # Activate spring profile "rest"
       - name: SPRING_PROFILES_ACTIVE
         value: rest
-
-  nodeSelector: { }
-
-  tolerations: [ ]
-
-  affinity: { }
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
