@@ -122,7 +122,7 @@ affinity: {}
 environment:
   secret:
     # Specify external secret within your kubernetes cluster, which you want to use to connect to your elasticsearch
-    externalElasticSecret: true
+    externalElasticSecret: false
     externalElasticSecretData:
       name: name
       key: key
