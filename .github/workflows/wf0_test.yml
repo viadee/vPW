@@ -6,8 +6,6 @@ name: Test pipeline, analyzer & vpw-shared-elasticsearch-config
 
 # Triggered by push or pull request on branch main or develop
 on:
-  push:
-    branches: [ main, dev ]
   pull_request:
     branches: [ main, dev ]
 
