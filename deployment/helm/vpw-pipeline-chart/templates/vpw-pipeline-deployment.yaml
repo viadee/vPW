@@ -50,13 +50,20 @@ spec:
           - configMapRef:
               name: {{ .Chart.Name }}-environment-config
           env:
-          - name: SPRING_ELASTICSEARCH_REST_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Chart.Name }}-environment-secret
-                key: ELASTIC_PWD
-          - name: SPRING_ELASTICSEARCH_REST_USERNAME
-            value: elastic
+            - name: SPRING_ELASTICSEARCH_REST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+{{- if not .Values.environment.secret.externalElasticSecret }}
+                  name: {{ .Chart.Name }}-environment-secret
+                  key: ELASTIC_PWD
+{{- else -}}
+{{- toYaml .Values.environment.secret.externalElasticSecretData | nindent 18 }}
+{{- end }}
+            - name: SPRING_ELASTICSEARCH_REST_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Chart.Name }}-environment-secret
+                  key: ELASTIC_USERNAME
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
 
