@@ -99,6 +99,7 @@ jobs:
         with:
           repository: viadee/camunda-kafka-polling-client
           path: polling-client
+          ref: master
 
       ##
       #  Override umbrella vpw-chart values.yaml with all subcharts values.yaml
