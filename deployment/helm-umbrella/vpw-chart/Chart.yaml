@@ -17,6 +17,6 @@ dependencies:
     enabled: true
     repository: https://viadee.github.io/charts
   - name: vpw-polling-client
-    version: 1.0.3
+    version: 1.0.2
     enabled: true
     repository: https://viadee.github.io/charts
