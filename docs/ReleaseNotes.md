@@ -4,6 +4,74 @@ nav_order: 3
 ---
 # Release notes
 
+## 1.0.5
+
+#### Version Look Up
+
+| Typ                     | Name                     | Version | Source                                                       |
+| ----------------------- | ------------------------ | ------- | ------------------------------------------------------------ |
+| Docker image            | vpw-analyzer             | 7.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-pipeline             | 7.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-frontend             | **7.0.1**   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-polling-client       | 2.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Helm chart              | vpw-analyzer-chart       | 1.0.2   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-pipeline-chart       | 1.0.2   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-frontend-chart       | [1.0.2](https://github.com/viadee/charts/releases/tag/vpw-frontend-1.0.2)   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-polling-client-chart | 1.0.2   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart (umbrella)   | vpw-chart                | [1.0.5](https://github.com/viadee/charts/releases/tag/vpw-chart-1.0.5)   | [viadee charts repository](https://github.com/viadee/charts) |
+
+
+### Features
+* Restructure nginx conf files: 
+  
+  Now it is possible to select between three configurations for the nginx:
+    
+    (1) local start-up for docker-compose
+    
+    (2) k8 start-up with basic auth (default)
+    
+    (3) k8 start-up without basic auth
+  
+* Adjust Dockerfile to recognize new nginx configuration possibilities 
+* Adjust vpw-frontend-chart to be able to call [start-up script](https://github.com/viadee/charts/blob/main/charts/vpw-frontend-chart/values.yaml#L17) to choose between nginx configurations
+
+### Fixes
+/
+
+### Updates:
+/
+
+-------------------------------------------
+
+## 1.0.4
+*Helm Chart Release*
+
+#### Version Look Up
+
+| Typ                     | Name                     | Version | Source                                                       |
+| ----------------------- | ------------------------ | ------- | ------------------------------------------------------------ |
+| Docker image            | vpw-analyzer             | 7.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-pipeline             | 7.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-frontend             | 7.0.0   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Docker image            | vpw-polling-client       | 2.0.1   | [AWS ECR](https://gallery.ecr.aws/viadee/)                   |
+| Helm chart              | vpw-analyzer-chart       | [1.0.2](https://github.com/viadee/charts/releases/tag/vpw-analyzer-1.0.2)   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-pipeline-chart       | [1.0.2](https://github.com/viadee/charts/releases/tag/vpw-pipeline-1.0.2)   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-frontend-chart       | 1.0.1   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart              | vpw-polling-client-chart | 1.0.2   | [viadee charts repository](https://github.com/viadee/charts) |
+| Helm chart (umbrella)   | vpw-chart                | [1.0.4](https://github.com/viadee/charts/releases/tag/vpw-chart-1.0.4)   | [viadee charts repository](https://github.com/viadee/charts) |
+
+
+### Features
+* vpw-analyzer-chart and vpw-pipeline-chart are now able to use an external secret for the connection with elasticsearch.   
+
+### Fixes
+/
+
+### Updates:
+/
+
+-------------------------------------------
+
 ## 1.0.3
 
 
