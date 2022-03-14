@@ -295,6 +295,14 @@ vpw-frontend:
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
+  # Override the docker image entrypoint of the frontend via command and args
+  # (1) If you set "containerCommandEnabled: false" the nginx will start up with basic auth, expecting a k8-environment.
+  # (2) If you set "containerCommandEnabled: true" and call the ./k8-nginx-startup.sh, the nginx will start without basic auth, expecting a k8-environment.
+  # (3) If you set "containerCommandEnabled:true" and call the ./local-nginx-startup.sh, the nginx will start, expecting a local docker environment.
+  containerCommandEnabled: false
+  container:
+    command: ["/bin/sh"]
+    args: ["./local-nginx-startup.sh"]
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: "vpw-frontend"
