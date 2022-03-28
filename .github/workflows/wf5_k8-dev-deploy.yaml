@@ -1,9 +1,9 @@
 ##
 # This workflow builds and tests docker images and pushes analyzer and pipeline to AWS ECR and
-# sets the new image version in gitlab bootstrap repository to trigger new deployment with Argo CD.
+# sets the new image version in vpw repo to trigger new deployment with Argo CD.
 ##
 
-name: Build release and push to AWS ECR & deploy on K8
+name: "Dev: build release and push to AWS ECR & deploy on K8 'dev.viadee.cloud'"
 
 on:
   push:
@@ -24,8 +24,12 @@ jobs:
       version: ${{ steps.step1.outputs.version }}
 
     steps:
-      - name: Checkout
+      - name: Checkout viadee/vPW repository
         uses: actions/checkout@v2
+        with:
+          repository: viadee/vPW
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          ref: dev
 
       # BUILD:
       - name: Set up Docker Buildx
@@ -125,20 +129,22 @@ jobs:
 
 
   trigger_deploy:
-    name: Checkout GitLab repo bootstrap-apps and push new version
+    name: Checkout vpw repo and push new version
     runs-on: ubuntu-latest
     needs: build_and_push
 
     steps:
+      # Debug
       - name: Version used in previous job 'build_and_push'
         run: echo ${{needs.build_and_push.outputs.version}}
 
-      - name: Checkout repo bootstrap-apps
-        run: |
-          git clone https://$TOKEN_NAME:$TOKEN@gitlab.intern.viadee.de/gitlab/viadee/BPMN/bpm-cloud2/bootstrap-apps.git
-        env:
-          TOKEN: ${{ secrets.GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN }}
-          TOKEN_NAME: GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN
+      # Checkout vpw
+      - name: Checkout viadee/vPW repository
+        uses: actions/checkout@v2
+        with:
+          repository: viadee/vPW
+          token: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          ref: dev
 
       # Set version
       - name: Set version to values.yaml with yq
@@ -146,26 +152,24 @@ jobs:
         uses: mikefarah/yq@master
         with:
           cmd: |
-            yq eval '(.vpw.vpw_analyzer.image.tag, .vpw.vpw_pipeline.image.tag) = "${{needs.build_and_push.outputs.version}}"' './bootstrap-apps/bootstrap/values.yaml'
+            ANALYZER_TAG=${{needs.build_and_push.outputs.version}} yq eval -i ".vpw-analyzer.image.tag=strenv(ANALYZER_TAG)" ./deployment/dev/helm-umbrella/vpw-chart/values.yaml
+            PIPELINE_TAG=${{needs.build_and_push.outputs.version}} yq eval -i ".vpw-pipeline.image.tag=strenv(PIPELINE_TAG)" ./deployment/dev/helm-umbrella/vpw-chart/values.yaml
 
-      - name: Save vpw.yaml
-        run: |
-          echo "${{ steps.yq.outputs.result }}" > bootstrap-apps/bootstrap/values.yaml
-
-      - name: Show updated vpw.yaml
+      # Debug
+      - name: Show updated values.yaml
         run:
           echo "$(cat values.yaml)"
-        working-directory: ./bootstrap-apps/bootstrap
+        working-directory: ./deployment/dev/helm-umbrella/vpw-chart
 
-      - name: Commit & push vpw.yaml
+      - name: Commit & push values.yaml
         run: |
           git config --global user.name 'wf5_k8-dev-deploy'
           git config --global user.email 'no-reply-github-actions@viadee.de'
-          git status
-          git add bootstrap/values.yaml
-          git commit -m"set image version to ${{needs.build_and_push.outputs.version}}"
-          git push https://$TOKEN_NAME:$TOKEN@gitlab.intern.viadee.de/gitlab/viadee/BPMN/bpm-cloud2/bootstrap-apps.git
+          git fetch origin
+          git pull
+          git add ./deployment/dev/helm-umbrella/vpw-chart/values.yaml
+          git diff --quiet && git diff --staged --quiet || git commit -m"set dev image version of analyzer & pipeline to '${{needs.build_and_push.outputs.version}}'"
+          git push https://$TOKEN_NAME:$TOKEN@github.com/viadee/vPW.git
         env:
-          TOKEN: ${{ secrets.GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN }}
-          TOKEN_NAME: GITLAB_BOOTSTRAP_APPS_ACCESS_TOKEN
-        working-directory: bootstrap-apps
+          TOKEN: ${{ secrets.PAT_VIADEE_GITHUB_VPW }}
+          TOKEN_NAME: PAT_VIADEE_GITHUB_VPW
