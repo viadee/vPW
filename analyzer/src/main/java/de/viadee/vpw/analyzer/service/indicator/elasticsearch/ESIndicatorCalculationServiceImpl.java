@@ -12,6 +12,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import de.viadee.vpw.analyzer.data.entity.Indicator;
@@ -37,6 +38,7 @@ public class ESIndicatorCalculationServiceImpl implements IndicatorCalculationSe
 
     private final ESSearchClient esSearchClient;
 
+    @Lazy
     private final ESQueryBuilder queryBuilder;
 
     private final ESIndicatorAggregationBuilder aggregationBuilder;

@@ -4,6 +4,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import de.viadee.vpw.analyzer.dto.entity.filter.CombinedFilter;
@@ -13,6 +14,7 @@ import de.viadee.vpw.analyzer.service.query.ESQueryBuilder;
 @Component
 public class CombinedFilterQueryBuilder implements CalculationFilterQueryBuilder<CombinedFilter> {
 
+    @Lazy
     @Autowired
     private ESQueryBuilder esQueryBuilder;
 
