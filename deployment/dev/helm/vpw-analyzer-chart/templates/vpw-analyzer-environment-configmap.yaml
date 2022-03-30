@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-environment-config
+  labels:
+{{- include "vpw-analyzer-chart.labels" . | nindent 4 }}
+data:
+  SPRING_ELASTICSEARCH_REST_URIS: {{ .Values.environment.configMap.spring_elasticsearch_rest_uris | quote }}
+  LOGGING_LEVEL_ROOT: {{ .Values.environment.configMap.logging_level_root | quote  }}
+  POSTGRESQL_HOST: {{ .Values.environment.configMap.postgresql_host | quote }}
+  POSTGRESQL_PORT: {{ .Values.environment.configMap.postgresql_port | quote }}
+  POSTGRESQL_DATABASENAME: {{ .Values.environment.configMap.postgresql_databasename | quote }}
+  POSTGRESQL_USER: {{ .Values.environment.configMap.postgresql_user | quote }}
+  SERVER_PORT: {{ .Values.environment.configMap.server_port | quote }}
+  SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE: {{ .Values.environment.configMap.spring_datasource_hikari_maximumpoolsize | quote }}
+  SPRING_DATASOURCE_HIKARI_MINIMUMIDLE: {{ .Values.environment.configMap.spring_datasource_hikari_minimumidle | quote }}
+  LOGGING_LEVEL_DE_VIADEE: {{ .Values.environment.configMap.logging_level_de_viadee | quote }}
