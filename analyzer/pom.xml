@@ -86,7 +86,7 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.2.Final</version>
+            <version>7.0.4.Final</version>
         </dependency>
 
         <!-- Jakarta Expression Language -->
@@ -110,10 +110,10 @@
         <!--********| END Jakarta Bean Validation  |********-->
 
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>2.0.1.Final</version>
         </dependency>
-
 
     </dependencies>
 
