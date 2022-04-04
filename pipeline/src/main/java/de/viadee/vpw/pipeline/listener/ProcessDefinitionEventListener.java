@@ -33,9 +33,6 @@ public class ProcessDefinitionEventListener {
     private final ApplicationProperties properties;
 
     @Autowired
-    ProcessDefinitionEventListener selfReference;
-
-    @Autowired
     public ProcessDefinitionEventListener(JsonMapper jsonMapper, RestTemplate restTemplate,
             ApplicationProperties properties) {
         this.jsonMapper = jsonMapper;
@@ -47,7 +44,7 @@ public class ProcessDefinitionEventListener {
     public void listen(ConsumerRecord<String, String> record, Acknowledgment acknowledgment) {
         logger.trace("Received record: {}", record);
         ProcessDefinitionEvent event = jsonMapper.fromJson(record.value(), ProcessDefinitionEvent.class);
-        this.selfReference.importProcessDefinition(event, acknowledgment);
+        this.importProcessDefinition(event, acknowledgment);
     }
 
     @Retryable(recover = "shutdown", value = RestClientException.class,
