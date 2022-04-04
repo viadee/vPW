@@ -1,11 +1,7 @@
 package de.viadee.vpw.pipeline.kafka;
 
 import java.time.Duration;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantLock;
@@ -264,6 +260,11 @@ public class SynchronizedKafkaConsumer<K, V> implements Consumer<K, V> {
         return executeWithLock(() -> consumer.endOffsets(partitions, timeout));
     }
 
+    @Override
+    public OptionalLong currentLag(TopicPartition topicPartition) {
+        return executeWithLock( () -> consumer.currentLag(topicPartition));
+    }
+
     // Return the current group metadata associated with this consumer.
     @Override
     public ConsumerGroupMetadata groupMetadata() {
@@ -284,11 +285,6 @@ public class SynchronizedKafkaConsumer<K, V> implements Consumer<K, V> {
     @Override
     public void close() {
         executeWithLock((Action) consumer::close);
-    }
-
-    @Override
-    public void close(long timeout, TimeUnit unit) {
-        executeWithLock(() -> consumer.close(timeout, unit));
     }
 
     @Override
