@@ -2,7 +2,7 @@ package de.viadee.vpw.pipeline.service.elastic;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.common.xcontent.XContentType;
+import org.elasticsearch.xcontent.XContentType;
 import org.elasticsearch.index.VersionType;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
