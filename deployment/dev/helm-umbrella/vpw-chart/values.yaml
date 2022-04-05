@@ -4,7 +4,7 @@ vpw-analyzer:
     repository: "public.ecr.aws/viadee/vpw-analyzer"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: dev-20220405-7968557
+    tag: dev-20220405-cf9bf2d
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
@@ -172,7 +172,7 @@ vpw-pipeline:
     repository: "public.ecr.aws/viadee/vpw-pipeline"
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: dev-20220405-7968557
+    tag: dev-20220405-cf9bf2d
   imagePullSecrets: []
   nameOverride: ""
   fullnameOverride: ""
