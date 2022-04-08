@@ -159,9 +159,9 @@ jobs:
           git config --global user.name 'wf1_release'
           git config --global user.email 'no-reply-github-actions@viadee.de'
           git fetch origin
-          git pull
           git branch -v -a
           git checkout main
+          git pull
           git status
           git add ./deployment/**
           git commit -m"update vpw-analyzer-chart version to ${{env.VPW_ANALYZER_CHART_VERSION}} with new appVersion ${{env.ANALYZER_DOCKER_VERSION}}"
@@ -234,9 +234,9 @@ jobs:
           git config --global user.name 'wf1_release'
           git config --global user.email 'no-reply-github-actions@viadee.de'
           git fetch origin
-          git pull
           git branch -v -a
           git checkout main
+          git pull
           git status
           git add ./deployment/**
           git commit -m"update vpw-pipeline-chart version to ${{env.VPW_PIPELINE_CHART_VERSION}} with new appVersion ${{env.PIPELINE_DOCKER_VERSION}}"
