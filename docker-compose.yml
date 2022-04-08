@@ -49,6 +49,8 @@ services:
     environment:
       - cluster.name=vpw
       - discovery.type=single-node
+    # Enable the option below to limit resource consumption for elasticsearch.
+    # - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
     networks:
       - elastic
     ports:

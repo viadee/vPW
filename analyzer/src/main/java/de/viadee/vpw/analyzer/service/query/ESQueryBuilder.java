@@ -14,6 +14,7 @@ import org.elasticsearch.index.query.TermQueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,6 +27,7 @@ import de.viadee.vpw.analyzer.util.ESConstants;
 /**
  * Helper to setup an Elasticsearch filter query used to setup a search request.
  */
+@Lazy
 @Component
 public class ESQueryBuilder {
 

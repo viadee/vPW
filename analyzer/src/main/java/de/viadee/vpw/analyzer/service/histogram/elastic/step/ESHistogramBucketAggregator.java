@@ -16,6 +16,7 @@ import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import de.viadee.vpw.analyzer.dto.entity.HistogramBucket;
@@ -33,6 +34,7 @@ public class ESHistogramBucketAggregator {
 
     private static final String AGGREGATION_PROCESS_COUNT = "processCount";
 
+    @Lazy
     private final ESQueryBuilder esQueryBuilder;
 
     private final ESSearchClient esSearchClient;
