@@ -9,7 +9,7 @@ dependencies:
     enabled: true
     repository: https://viadee.github.io/charts
   - name: vpw-pipeline
-    version: 1.0.2
+    version: 1.0.3
     enabled: true
     repository: https://viadee.github.io/charts
   - name: vpw-frontend
