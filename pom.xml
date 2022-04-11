@@ -26,7 +26,7 @@
         <camunda-kafka-model.version>2.0.1</camunda-kafka-model.version>
         <elastic.version>7.17.2</elastic.version>
         <postgresql.version>42.3.3</postgresql.version>
-        <h2.version>1.4.200</h2.version>
+        <h2.version>2.1.212</h2.version>
     </properties>
 
     <dependencyManagement>
