@@ -43,7 +43,7 @@ services:
     image: zenko/kafka-manager:latest
     profiles:
       - backend
-      - polling-client-local
+        #     - polling-client-local
       - all
     ports:
       - 9000:9000
@@ -98,18 +98,44 @@ services:
     networks:
       - analyzer
 
+  camunda-db:
+    image: postgres:13.6
+    environment:
+      POSTGRES_DB: process-engine
+      POSTGRES_USER: camunda
+      POSTGRES_PASSWORD: camunda
+      TZ: Europe/Berlin
+    ports:
+      - 5432:5432
+    profiles:
+      - windshield-claim-local
+    networks:
+      - camunda
+
   camunda-process-application:
     image: camunda/camunda-bpm-platform:7.15.0
+    environment:
+      DB_DRIVER: org.postgresql.Driver
+      DB_URL: jdbc:postgresql://camunda-db:5432/process-engine
+      DB_USERNAME: camunda
+      DB_PASSWORD: camunda
+      LDAP_ENABLED: "false"
+      REST_AUTH_ENABLED: "false"
+      CAMUNDA_USERNAME: demo
+      CAMUNDA_PASSWORD: demo
+      TZ: Europe/Berlin
+      WAIT_FOR: camunda-db:5432
+    ports:
+      - 8081:8080
     profiles:
       - backend
       - polling-client-local
       - all
-    ports:
-      - 8081:8080
+      - windshield-claim-local
     networks:
       - camunda
-    environment:
-      LDAP_ENABLED: "false"
+    volumes:
+      - ./pg-data:/var/lib/postgresql/data
 
   vpw-polling-client:
     image: public.ecr.aws/viadee/camunda-kafka-polling-client:latest
