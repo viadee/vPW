@@ -23,7 +23,7 @@ The viadee Process Warehouse (vPW) enables the analysis of process data that is 
 
 <h2 align="center"><a href="https://viadee.github.io/vPW/">DOCUMENTATION</a></h2>
 
-<h2 align="center"><a href="https://vpw-demo.bpm.viadee.cloud/">Discover our SHOWCASE</a></h2>
+<h2 align="center"><a href="https://vpw-bpm.demo.viadee.cloud/">Discover our SHOWCASE</a></h2>
 
 <h2 align="center"><a href="https://www.viadee.de/en/solutions/business-process-management/process-warehouse">GET IN TOUCH WITH US</a></h2>
 
@@ -34,7 +34,10 @@ ________________________________
 <br>
 
 ## Showcase
-The username and password are both `demo` for our [showcase environment](https://vpw-bpm.demo.viadee.cloud/).
+The username and password are both `demo` for our [showcase environment](https://vpw-bpm.
+
+
+viadee.cloud/).
 
 ## Dependency Report 
 All licences of reused components can be found [here](/docs/MavenSite/index.html). 
