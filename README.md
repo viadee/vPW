@@ -34,7 +34,7 @@ ________________________________
 <br>
 
 ## Showcase
-The username and password are both `demo` for our [showcase environment](https://vpw-demo.bpm.viadee.cloud/).
+The username and password are both `demo` for our [showcase environment](https://vpw-bpm.demo.viadee.cloud/).
 
 ## Dependency Report 
 All licences of reused components can be found [here](/docs/MavenSite/index.html). 
