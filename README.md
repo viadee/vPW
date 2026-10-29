@@ -6,6 +6,12 @@
 [![Build release and push to AWS ECR](https://github.com/viadee/vPW/actions/workflows/wf1_release.yml/badge.svg)](https://github.com/viadee/vPW/actions/workflows/wf1_release.yml)
 [![Build release and push to AWS ECR & deploy on K8](https://github.com/viadee/vPW/actions/workflows/wf5_k8-dev-deploy.yaml/badge.svg?branch=dev)](https://github.com/viadee/vPW/actions/workflows/wf5_k8-dev-deploy.yaml)
 
+
+<h1>⚠️ Archiving Notice️️ ⚠️ </h1>
+Please note that this repository is being archived at the end of October 2026 and is no longer actively maintained.
+However, should you be interested in using, extending or otherwise updating the vPW, please feel free to <a href="mailto:bpm@viadee.de">get in touch</a>!
+
+________________________________
 <br>
 <h1 align="center">The viadee Process Warehouse </h1>
 <h1 align="center">Explore what happens in your BPMN processes </h1>
@@ -22,8 +28,9 @@ The viadee Process Warehouse (vPW) enables the analysis of process data that is 
 <br>
 
 <h2 align="center"><a href="https://viadee.github.io/vPW/">DOCUMENTATION</a></h2>
+<h2 align="center"><a href="https://www.viadee.de/en/">WHO WE ARE</a></h2>
 
-<h2 align="center"><a href="https://www.viadee.de/en/solutions/business-process-management/process-warehouse">GET IN TOUCH WITH US</a></h2>
+<h2 align="center"><a href="mailto:bpm@viadee.de">GET IN TOUCH</a></h2>
 
 <br>
 
